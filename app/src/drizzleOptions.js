@@ -5,7 +5,10 @@ import SimpleStorage from './contracts/SimpleStorage.json';
 const options = {
   web3: {
     block: false,
-    customProvider: new Web3('ws://localhost:8545'),
+    fallback: {
+      type: 'ws',
+      url: 'ws://localhost:8545',
+    },
   },
   contracts: [SimpleStorage, ComplexStorage],
   events: {
