@@ -28,4 +28,32 @@ contract('Decentrapark', (accounts) => {
       return id == ev.parkingID;
     });
   });
+
+  it('get rent price by index', async () => {
+    let instance = await Decentrapark.deployed();
+    let result = await instance.getRentPriceByIndex(0);
+
+    assert.equal(10, result);
+  });
+
+  it('get owner by index', async () => {
+    let instance = await Decentrapark.deployed();
+    let result = await instance.getOwnerByIndex(0);
+
+    assert.equal(accounts[3], result);
+  });
+
+  it('get Renter by index', async () => {
+    let instance = await Decentrapark.deployed();
+    let result = await instance.getRenterByIndex(0);
+    let addressNull = 0x0000000000000000000000000000000000000000;
+    assert.equal(addressNull, result);
+  });
+
+  it('get rent time by index', async () => {
+    let instance = await Decentrapark.deployed();
+    let result = await instance.getRentTimeByIndex(0);
+
+    assert.equal(500, result.toNumber());
+  });
 });
