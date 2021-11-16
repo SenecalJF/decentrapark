@@ -6,8 +6,8 @@ contract Decentrapark {
     address owner;
     address renter;
     uint256 rentPrice;
-    uint256 rentTime;
     uint256 parkingPrice;
+    uint256 rentTime;
   }
 
   Parking[] public parkings;
@@ -100,6 +100,10 @@ contract Decentrapark {
 
   function getRenterByIndex(uint256 _index) public view returns (address) {
     return parkings[_index].renter;
+  }
+
+  function getParkingPriceByIndex(uint256 _index) public view returns (uint256) {
+    return parkings[_index].parkingPrice;
   }
 
   function getRentTimeByIndex(uint256 _index) public view returns (uint256) {

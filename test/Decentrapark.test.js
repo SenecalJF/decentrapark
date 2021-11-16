@@ -50,10 +50,24 @@ contract('Decentrapark', (accounts) => {
     assert.equal(addressNull, result);
   });
 
+  it('get Parking price by index', async () => {
+    let instance = await Decentrapark.deployed();
+    let result = await instance.getParkingPriceByIndex(1);
+
+    assert.equal(10000, result.toNumber());
+  });
+
   it('get rent time by index', async () => {
     let instance = await Decentrapark.deployed();
-    let result = await instance.getRentTimeByIndex(0);
+    let result = await instance.getRentTimeByIndex(1);
 
-    assert.equal(500, result.toNumber());
+    assert.equal(86400, result.toNumber());
+  });
+
+  it('set the rent price', async () => {
+    let instance = await Decentrapark.deployed();
+    await instance.setRentPrice(29, 0, { value: accounts[0] });
+
+    assert.equal(29, await instance.getRentPrice(0));
   });
 });
