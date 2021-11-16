@@ -16,10 +16,6 @@ contract Decentrapark {
   event ParkingAdded(address _owner, uint256 _rentPrice, uint256 _parkingPrice, uint256 parkingID);
   event ParkingRenter();
 
-  constructor() {
-    //TODO
-  }
-
   function addParkingSpot(
     address _owner,
     uint256 _rentPrice,

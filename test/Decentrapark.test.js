@@ -66,7 +66,7 @@ contract('Decentrapark', (accounts) => {
 
   it('set the rent price', async () => {
     let instance = await Decentrapark.deployed();
-    await instance.setRentPrice(29, 0, { value: accounts[0] });
+    await instance.setRentPrice(29, 0, { from: accounts[3] });
 
     assert.equal(29, await instance.getRentPrice(0));
   });
