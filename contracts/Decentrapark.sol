@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
+//TODO : add a modifier to have an index in the range of 0 to parkings.lenght -1
 contract Decentrapark {
   struct Parking {
     address owner;
@@ -79,6 +80,7 @@ contract Decentrapark {
     parkings[_indexParking].owner = msg.sender;
   }
 
+  // true is available, false is unavailable
   function getAvailability(uint256 _index) public view returns (bool) {
     if (parkings[_index].renter != nullAddress) {
       return false;
