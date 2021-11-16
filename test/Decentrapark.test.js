@@ -67,7 +67,61 @@ contract('Decentrapark', (accounts) => {
   it('set the rent price', async () => {
     let instance = await Decentrapark.deployed();
     await instance.setRentPrice(29, 0, { from: accounts[3] });
-
-    assert.equal(29, await instance.getRentPrice(0));
+    let amount = await instance.getRentPriceByIndex(0);
+    assert.equal(29, amount);
   });
+
+  it('set the Parking Price', async () => {
+    let instance = await Decentrapark.deployed();
+    await instance.setParkingPrice(666, 0, { from: accounts[3] });
+    let amount = await instance.getParkingPriceByIndex(0);
+    assert.equal(666, amount);
+  });
+
+  it('set the rent Time', async () => {
+    let instance = await Decentrapark.deployed();
+
+    await instance.setRentTime(2, 0, { from: accounts[3] });
+    let time = await instance.getRentTimeByIndex(0);
+
+    assert.equal(2 * 86400, time);
+  });
+
+  it('should not let change the rent price', async () => {
+    let instance = await Decentrapark.deployed();
+    try {
+      await instance.setRentPrice(29, 0, { from: accounts[4] });
+      assert.equal(0, 0);
+    } catch (err) {
+      assert.include(err.message, 'revert', "The error message should contain 'revert'");
+    }
+  });
+
+  it('rent a parking account', async () => {
+    let instance = await Decentrapark.deployed();
+    let rentPrice = await instance.getRentPriceByIndex(0);
+    let passRentTime = await instance.getRentTimeByIndex(0);
+    await instance.RentParking(0, { from: accounts[2], value: rentPrice });
+    let newRenter = await instance.getRenterByIndex(0);
+    let newRentTime = await instance.getRentTimeByIndex(0);
+    let created_time = Math.floor(Date.now() / 1000) + passRentTime * 5;
+
+    assert.equal(newRenter, accounts[2]);
+    let delta = Math.abs(newRentTime.toNumber() - created_time);
+    assert.equal(5 > delta, true);
+  });
+
+  it('should not let rent again', async () => {
+    let instance = await Decentrapark.deployed();
+    let rentPrice = await instance.getRentPriceByIndex(0);
+
+    try {
+      await instance.RentParking(0, { from: accounts[2], value: rentPrice });
+      assert.equal(0, 0);
+    } catch (err) {
+      assert.include(err.message, 'revert', "The error message should contain 'revert'");
+    }
+  });
+
+  it('check availability of parking', async () => {});
 });
