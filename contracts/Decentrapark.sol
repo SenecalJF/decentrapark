@@ -15,8 +15,7 @@ contract Decentrapark {
 
   address private nullAddress = 0x0000000000000000000000000000000000000000;
 
-  event ParkingAdded(address _owner, uint256 _rentPrice, uint256 _parkingPrice, uint256 parkingID);
-  event ParkingRenter();
+  event ParkingAdded(address _owner, uint256 parkingID);
 
   modifier validId(uint256 _indexParking) {
     require(_indexParking < parkings.length, 'Invalid parking ID');
@@ -34,7 +33,7 @@ contract Decentrapark {
     uint256 _ParkingPrice
   ) external {
     parkings.push(Parking(_owner, nullAddress, _rentPrice, _ParkingPrice, 1 days));
-    emit ParkingAdded(msg.sender, _rentPrice, _ParkingPrice, parkings.length - 1);
+    emit ParkingAdded(msg.sender, parkings.length - 1);
   }
 
   function setRentPrice(uint256 _rentPrice, uint256 _indexParking)
