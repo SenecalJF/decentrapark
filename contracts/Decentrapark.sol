@@ -15,7 +15,7 @@ contract Decentrapark {
 
   address private nullAddress = 0x0000000000000000000000000000000000000000;
 
-  event ParkingAdded(address _owner, uint256 parkingID);
+  event ParkingAdded(address indexed _owner, uint256 parkingID);
 
   modifier validId(uint256 _indexParking) {
     require(_indexParking < parkings.length, 'Invalid parking ID');

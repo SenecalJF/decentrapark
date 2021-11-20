@@ -10,8 +10,6 @@ contract('Decentrapark', (accounts) => {
     id = 0;
     truffleAssert.eventEmitted(result, 'ParkingAdded', (ev) => {
       assert.equal(ev._owner, accounts[3]);
-      assert.equal(ev._rentPrice.toNumber(), 10);
-      assert.equal(ev._parkingPrice.toNumber(), 500);
       return id == ev.parkingID;
     });
   });
@@ -23,8 +21,6 @@ contract('Decentrapark', (accounts) => {
     id += 1;
     truffleAssert.eventEmitted(result, 'ParkingAdded', (ev) => {
       assert.equal(ev._owner, accounts[5]);
-      assert.equal(ev._rentPrice.toNumber(), 15);
-      assert.equal(ev._parkingPrice.toNumber(), 10000);
       return id == ev.parkingID;
     });
   });
