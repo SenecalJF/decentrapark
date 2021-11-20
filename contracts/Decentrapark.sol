@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
-//TODO : add a modifier to have an index in the range of 0 to parkings.lenght -1
 contract Decentrapark {
   Parking[] public parkings;
 
