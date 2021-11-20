@@ -9,6 +9,7 @@ import './App.css';
 import NavBar from './components/NavBar';
 import Owner from './components/Owner';
 import Parkings from './components/Parkings';
+import AddParking from './components/AddParking';
 
 const drizzle = new Drizzle(drizzleOptions);
 
@@ -29,6 +30,11 @@ const App = () => {
               <Routes>
                 <Route exact path="/" element={<Parkings drizzle={drizzle} drizzleState={drizzleState} />} />
                 <Route exact path="/owner" element={<Owner drizzle={drizzle} drizzleState={drizzleState} />} />
+                <Route
+                  exact
+                  path="/addParking"
+                  element={<AddParking drizzle={drizzle} drizzleState={drizzleState} />}
+                />
               </Routes>
             </Router>
           );

@@ -63,6 +63,9 @@ const NavBar = ({ drizzleState }) => {
             <MenuItem component={Link} to="/owner" onClick={handleClose}>
               Your parkings
             </MenuItem>
+            <MenuItem component={Link} to="/addParking" onClick={handleClose}>
+              Add a parking
+            </MenuItem>
           </Menu>
 
           <Typography variant="h5" className={classes.title}>

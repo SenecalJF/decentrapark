@@ -14,14 +14,21 @@ const styles = makeStyles((theme) => ({
 const Parkings = ({ drizzle, drizzleState }) => {
   const classes = styles();
 
+  const addParking = async () => {
+    await drizzle.contracts.Decentrapark.methods.addParkingSpot(drizzleState.accounts[0], 15, 500, 1);
+    const parkingslist = await drizzle.contracts.Decentrapark.methods.getRentPriceByIndex(0);
+    console.log(parkingslist);
+  };
+  addParking();
+
+  //   useEffect(() => {});
+
   return (
     <>
       <CssBaseline />
       <Container>
         <div className={classes.root}>
-          <Grid container spacing={3}>
-            <Typography>Hello</Typography>
-          </Grid>
+          <Grid container spacing={3}></Grid>
         </div>
       </Container>
     </>
