@@ -58,6 +58,10 @@ contract Decentrapark {
     return parkings[_indexParking].rentExpiration;
   }
 
+  function getParkings() public view returns (Parking[] memory) {
+    return parkings;
+  }
+
   // SETTERS
 
   function setRentPrice(uint256 _rentPrice, uint256 _indexParking)

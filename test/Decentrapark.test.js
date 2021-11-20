@@ -25,6 +25,12 @@ contract('Decentrapark', (accounts) => {
     });
   });
 
+  it('get all parkings', async () => {
+    let instance = await Decentrapark.deployed();
+    let list = await instance.getParkings();
+    assert.equal(list.length, 2);
+  });
+
   it('get rent price by index', async () => {
     let instance = await Decentrapark.deployed();
     let result = await instance.getRentPriceByIndex(0);
