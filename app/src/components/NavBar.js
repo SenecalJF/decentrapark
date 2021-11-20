@@ -10,6 +10,8 @@ import MenuItem from '@material-ui/core/MenuItem';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 
+import { Link } from 'react-router-dom';
+
 const styles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -55,8 +57,12 @@ const NavBar = ({ drizzleState }) => {
             <MenuIcon />
           </IconButton>
           <Menu id="simple-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
-            <MenuItem onClick={handleClose}>Parkings</MenuItem>
-            <MenuItem onClick={handleClose}>Your parkings</MenuItem>
+            <MenuItem component={Link} to="/" onClick={handleClose}>
+              Parkings
+            </MenuItem>
+            <MenuItem component={Link} to="/owner" onClick={handleClose}>
+              Your parkings
+            </MenuItem>
           </Menu>
 
           <Typography variant="h5" className={classes.title}>
