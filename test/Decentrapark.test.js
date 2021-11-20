@@ -99,28 +99,27 @@ contract('Decentrapark', (accounts) => {
     }
   });
 
+  it('good rent duration', async () => {
+    let instance = await Decentrapark.deployed();
+    let rentPrice = await instance.getRentPriceByIndex(0);
+    await instance.RentParking(0, { from: accounts[7], value: rentPrice });
+    let newRenter = await instance.getRenterByIndex(0);
+    let finishedDuration = await instance.getRentExpirationByIndex(0);
+    let rentDuration = await instance.getRentDurationByIndex(0);
+    let created_time = Math.floor(Date.now() / 1000) + rentDuration.toNumber();
+    assert.equal(newRenter, accounts[7]);
+    let delta = Math.abs(finishedDuration.toNumber() - created_time);
+    assert.equal(5 > delta, true);
+  });
+
   // it('rent a parking', async () => {
   //   let instance = await Decentrapark.deployed();
   //   let rentPrice = await instance.getRentPriceByIndex(0);
-  //   let passRentDuration = await instance.getRentDurationByIndex(0);
   //   await instance.RentParking(0, { from: accounts[2], value: rentPrice });
   //   let newRenter = await instance.getRenterByIndex(0);
-  //   let newRentDuration = await instance.getRentDurationByIndex(0);
-  //   let created_time = Math.floor(Date.now() / 1000) + passRentDuration;
 
   //   assert.equal(newRenter, accounts[2]);
-  //   let delta = Math.abs(newRentDuration.toNumber() - created_time);
-  //   assert.equal(5 > delta, true);
   // });
-
-  it('rent a parking', async () => {
-    let instance = await Decentrapark.deployed();
-    let rentPrice = await instance.getRentPriceByIndex(0);
-    await instance.RentParking(0, { from: accounts[2], value: rentPrice });
-    let newRenter = await instance.getRenterByIndex(0);
-
-    assert.equal(newRenter, accounts[2]);
-  });
 
   it('should not let rent again', async () => {
     let instance = await Decentrapark.deployed();
