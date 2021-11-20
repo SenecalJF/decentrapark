@@ -107,13 +107,22 @@ contract('Decentrapark', (accounts) => {
   //   assert.equal(5 > delta, true);
   // });
 
+  it('rent a parking', async () => {
+    let instance = await Decentrapark.deployed();
+    let rentPrice = await instance.getRentPriceByIndex(0);
+    await instance.RentParking(0, { from: accounts[2], value: rentPrice });
+    let newRenter = await instance.getRenterByIndex(0);
+
+    assert.equal(newRenter, accounts[2]);
+  });
+
   it('should not let rent again', async () => {
     let instance = await Decentrapark.deployed();
     let rentPrice = await instance.getRentPriceByIndex(0);
 
     try {
       await instance.RentParking(0, { from: accounts[2], value: rentPrice });
-      assert.equal(0, 0);
+      assert.fail('The transaction should have thrown an error');
     } catch (err) {
       assert.include(err.message, 'revert', "The error message should contain 'revert'");
     }
@@ -122,46 +131,41 @@ contract('Decentrapark', (accounts) => {
   it('check availability of parking', async () => {
     let instance = await Decentrapark.deployed();
     let result = await instance.getAvailability(0);
-    assert.equal(result, false);
+    assert.isNotTrue(result);
   });
 
   it('check availability of parking', async () => {
     let instance = await Decentrapark.deployed();
     let result = await instance.getAvailability(1);
-    assert.equal(result, true);
+    assert.isTrue(result);
   });
 
-  it(' should not let the unrent the parking', async () => {
+  it('should not let the unrent the parking', async () => {
     let instance = await Decentrapark.deployed();
     try {
       await instance.unRentParking(0, { from: accounts[3] });
-      assert.equal(0, 0);
+      assert.fail('The transaction should have thrown an error');
     } catch (err) {
       assert.include(err.message, 'revert', "The error message should contain 'revert'");
     }
   });
 });
 
-// contract('Decentrapark', (accounts) => {
-//   it('unrent a parking spot', async () => {
-//     let instance = await Decentrapark.deployed();
-//     let addressNull = 0x0000000000000000000000000000000000000000;
-//     let result = await instance.addParkingSpot(accounts[3], 10, 500, { from: accounts[3] });
-//     await instance.setRentTime(0, 0, { from: accounts[3] });
-//     try {
-//       await instance.unRentParking(0, { from: accounts[3] });
-//       assert.equal(addressNull, await instance.getRenterByIndex(0));
-//     } catch (err) {
-//       assert.include(err.message, 'revert', "The error message should contain 'revert'");
-//     }
-//   });
+contract('Decentrapark', (accounts) => {
+  it('unrent a parking spot', async () => {
+    let instance = await Decentrapark.deployed();
+    let addressNull = 0x0000000000000000000000000000000000000000;
+    await instance.addParkingSpot(accounts[3], 10, 500, 0, { from: accounts[3] });
+    await instance.unRentParking(0, { from: accounts[3] });
+    assert.equal(addressNull, await instance.getRenterByIndex(0));
+  });
 
-//   it('check availability of parking', async () => {
-//     let instance = await Decentrapark.deployed();
-//     let result = await instance.getAvailability(0);
-//     assert.equal(result, true);
-//   });
-// });
+  it('check availability of parking', async () => {
+    let instance = await Decentrapark.deployed();
+    let result = await instance.getAvailability(0);
+    assert.isTrue(result);
+  });
+});
 
 contract('Decentrapark', (accounts) => {
   it('Buy a parking spot', async () => {
