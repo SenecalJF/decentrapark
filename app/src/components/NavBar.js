@@ -21,7 +21,7 @@ const styles = makeStyles((theme) => ({
   },
   title: {
     flexGrow: 1,
-    textAlign: 'center',
+    testAlign: 'center',
   },
   appBar: {
     background: '#FF4747',
@@ -42,7 +42,7 @@ const NavBar = ({ drizzleState }) => {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" colro="transparent" className={classes.appBar}>
+      <AppBar position="static" color="transparent" className={classes.appBar}>
         <Toolbar>
           <IconButton
             size="large"
@@ -68,7 +68,7 @@ const NavBar = ({ drizzleState }) => {
             </MenuItem>
           </Menu>
 
-          <Typography variant="h5" className={classes.title}>
+          <Typography variant="h5" className={classes.title} align="center">
             Decentrapark
           </Typography>
         </Toolbar>
