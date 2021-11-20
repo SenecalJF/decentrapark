@@ -3,8 +3,10 @@ import { DrizzleContext } from '@drizzle/react-plugin';
 import { Drizzle } from '@drizzle/store';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
+import drizzleOptions from './drizzleOptions';
 import MyComponent from './MyComponent';
 import './App.css';
+import NavBar from './components/NavBar';
 
 const drizzle = new Drizzle(drizzleOptions);
 
@@ -21,6 +23,7 @@ const App = () => {
 
           return (
             <Router>
+              <NavBar drizzleState={drizzleState} />
               <Routes></Routes>
             </Router>
           );
