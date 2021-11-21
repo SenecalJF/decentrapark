@@ -41,17 +41,19 @@ const AddParking = ({ drizzle, drizzleState }) => {
     },
     onSubmit: async ({ rentPrice, parkingPrice, rentDuration }) => {
       try {
-        await drizzle.contracts.Decentrapark.methods.addParkingSpot(
-          drizzleState.accounts[0],
-          rentPrice,
-          parkingPrice,
-          rentDuration
-        );
+        await drizzle.contracts.Decentrapark.methods
+          .addParkingSpot(drizzleState.accounts[0], rentPrice, parkingPrice, rentDuration)
+          .send({ from: drizzleState.accounts[0] });
+        handleButton();
       } catch (error) {
         alert('Please enter input correctly');
       }
     },
   });
+
+  const handleButton = async () => {
+    window.alert('Successfully added parking');
+  };
 
   return (
     <>
@@ -62,7 +64,7 @@ const AddParking = ({ drizzle, drizzleState }) => {
             <Grid item xs={12}>
               <Paper className={classes.paper}>
                 <Grid className={classes.item} item xs={12}>
-                  <Typography variant="h3" align="center" color="black" font-weight="bold" color="black">
+                  <Typography variant="h3" align="center" color="black" fontWeight="bold" color="black">
                     Add your parking spot
                   </Typography>
                 </Grid>
@@ -114,6 +116,7 @@ const AddParking = ({ drizzle, drizzleState }) => {
                       <Button color="secondary" variant="contained" fullWidth type="submit">
                         Add
                       </Button>
+                      {}
                     </Grid>
                   </form>
                 </Grid>

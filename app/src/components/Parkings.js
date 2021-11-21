@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
@@ -13,13 +13,17 @@ const styles = makeStyles((theme) => ({
 
 const Parkings = ({ drizzle, drizzleState }) => {
   const classes = styles();
+  const [parkingsList, setParkinksList] = useState([]);
 
   const addParking = async () => {
     await drizzle.contracts.Decentrapark.methods.addParkingSpot(drizzleState.accounts[0], 15, 500, 1);
-    const parkingslist = await drizzle.contracts.Decentrapark.methods.getRentPriceByIndex(0);
-    console.log(parkingslist);
+    await drizzle.contracts.Decentrapark.methods.addParkingSpot(drizzleState.accounts[0], 15, 600, 1);
+    setParkinksList(await drizzle.contracts.Decentrapark.methods.getParkings());
+
+    // console.log('hello');
+    // console.log(parkingsList);
   };
-  addParking();
+  // addParking();
 
   //   useEffect(() => {});
 
@@ -28,7 +32,9 @@ const Parkings = ({ drizzle, drizzleState }) => {
       <CssBaseline />
       <Container>
         <div className={classes.root}>
-          <Grid container spacing={3}></Grid>
+          <Grid container spacing={3}>
+            <Typography> </Typography>
+          </Grid>
         </div>
       </Container>
     </>
