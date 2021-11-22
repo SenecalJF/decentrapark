@@ -46,7 +46,7 @@ const AddParking = ({ drizzle, drizzleState }) => {
           .send({ from: drizzleState.accounts[0] });
         handleButton();
       } catch (error) {
-        alert('Please enter input correctly');
+        alert('Please enter input correctly - Failed to add parking');
       }
     },
   });

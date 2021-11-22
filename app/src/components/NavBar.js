@@ -5,6 +5,7 @@ import Box from '@material-ui/core/Box';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import IconButton from '@material-ui/core/IconButton';
@@ -21,7 +22,8 @@ const styles = makeStyles((theme) => ({
   },
   title: {
     flexGrow: 1,
-    testAlign: 'center',
+    justifyContent: 'center',
+    textAlign: 'center',
   },
   appBar: {
     background: '#FF4747',
@@ -44,33 +46,37 @@ const NavBar = ({ drizzleState }) => {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" color="transparent" className={classes.appBar}>
         <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            aria-controls="simple-menu"
-            aria-haspopup="true"
-            onClick={handleClick}
-            className={classes.menuButton}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Menu id="simple-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
-            <MenuItem component={Link} to="/" onClick={handleClose}>
-              Parkings
-            </MenuItem>
-            <MenuItem component={Link} to="/owner" onClick={handleClose}>
-              Your parkings
-            </MenuItem>
-            <MenuItem component={Link} to="/addParking" onClick={handleClose}>
-              Add a parking
-            </MenuItem>
-          </Menu>
+          <Grid item xs={1}>
+            <IconButton
+              size="large"
+              edge="start"
+              color="inherit"
+              aria-label="menu"
+              aria-controls="simple-menu"
+              aria-haspopup="true"
+              onClick={handleClick}
+              className={classes.menuButton}
+            >
+              <MenuIcon />
+            </IconButton>
 
-          <Typography variant="h5" className={classes.title} align="center">
-            Decentrapark
-          </Typography>
+            <Menu id="simple-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
+              <MenuItem component={Link} to="/" onClick={handleClose}>
+                Parkings
+              </MenuItem>
+              <MenuItem component={Link} to="/owner" onClick={handleClose}>
+                Your parkings
+              </MenuItem>
+              <MenuItem component={Link} to="/addParking" onClick={handleClose}>
+                Add a parking
+              </MenuItem>
+            </Menu>
+          </Grid>
+          <Grid item xs={10}>
+            <Typography variant="h5" className={classes.title} align="center">
+              Decentrapark
+            </Typography>
+          </Grid>
         </Toolbar>
       </AppBar>
     </Box>
