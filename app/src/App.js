@@ -4,7 +4,6 @@ import { Drizzle } from '@drizzle/store';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import drizzleOptions from './drizzleOptions';
-import MyComponent from './MyComponent';
 import './App.css';
 import NavBar from './components/NavBar';
 import Owner from './components/Owner';
