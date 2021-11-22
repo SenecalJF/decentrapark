@@ -44,11 +44,10 @@ const NavBar = ({ drizzleState }) => {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" color="transparent" className={classes.appBar}>
+      <AppBar position="static" className={classes.appBar}>
         <Toolbar>
           <Grid item xs={1}>
             <IconButton
-              size="large"
               edge="start"
               color="inherit"
               aria-label="menu"

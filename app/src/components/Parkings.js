@@ -54,33 +54,29 @@ const Parkings = ({ drizzle, drizzleState }) => {
   const [parkingsList, setParkingsList] = useState([]);
   const [modalStyle] = useState(getModalStyle);
   const [openModal, setOpenModal] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      let parkings = await drizzle.contracts.Decentrapark.methods.getParkings().call();
+      parkings = parkings.map((parking, index) => {
+        return {
+          ...parking,
+          color: getColor(parking.rentExpiration),
+        };
+      });
+      setParkingsList(parkings);
+    })();
+  }, []);
+
+  const getColor = (expiration) => {
+    return expiration < Math.floor(new Date().getTime() / 1000) ? 'lightGreen' : 'red';
+  };
+
   const handleOpen = () => {
     setOpenModal(true);
   };
   const handleClose = () => {
     setOpenModal(false);
-  };
-
-  let park = [];
-  useEffect(() => {
-    (async () => {
-      setParkingsList(await drizzle.contracts.Decentrapark.methods.getParkings().call());
-    })();
-
-    // setParkingsList(
-    //   parkingsList.map((parking, index) => {
-    //     return { ...parking, color: showColor(index) };
-    //   })
-    // );
-  }, []);
-
-  const showColor = async (_index) => {
-    let not_occupied = await drizzle.contracts.Decentrapark.methods.getAvailability(_index).call();
-    if (not_occupied) {
-      return 'primary';
-    } else {
-      return 'secondary';
-    }
   };
 
   const openParking = (_index) => {
@@ -111,28 +107,42 @@ const Parkings = ({ drizzle, drizzleState }) => {
               Parkings{' '}
             </Typography>
             <Grid container item xs={12}>
-              {parkingsList.map((parkingStruct, index) => (
-                <div>
-                  <Paper
-                    // classes={{ background: showColor(index) }}
-                    variant="outlined"
-                    className={classes.paper}
-                    onClick={() => {
-                      handleOpen();
-                    }}
-                  >
-                    {/* {showColor(index)} */}
-                    <Grid className={classes.item} item xs={12} align="center">
-                      {/* <Typography> {parkingStruct.owner} </Typography> */}
-                      {/* <Typography> {parkingStruct.rentPrice} </Typography> */}
-                      {/* <Typography> {parkingStruct.rentDuration / 86400} </Typography> */}
-                      {/* <Typography> {parkingStruct.color} </Typography> */}
-
-                      <Typography> {index} </Typography>
-                    </Grid>
-                  </Paper>
+              {parkingsList.map((parking, index) => (
+                <div
+                  key={index}
+                  onClick={() => {
+                    handleOpen();
+                  }}
+                  style={{
+                    margin: 10,
+                    width: '15%',
+                    height: 100,
+                    backgroundColor: parking.color,
+                    border: 'solid 1px black',
+                    textAlign: 'center',
+                  }}
+                >
                   {openParking(index)}
+                  <Typography> {index} </Typography>
                 </div>
+                // <Paper
+                //   // classes={{ background: showColor(index) }}
+                //   variant="outlined"
+                //   className={classes.paper}
+                //   onClick={() => {
+                //     handleOpen();
+                //   }}
+                // >
+                //   {/* {showColor(index)} */}
+                //   <Grid className={classes.item} item xs={12} align="center">
+                //     {/* <Typography> {parkingStruct.owner} </Typography> */}
+                //     {/* <Typography> {parkingStruct.rentPrice} </Typography> */}
+                //     {/* <Typography> {parkingStruct.rentDuration / 86400} </Typography> */}
+                //     {/* <Typography> {parkingStruct.color} </Typography> */}
+
+                //     <Typography> {index} </Typography>
+                //   </Grid>
+                // </Paper>
               ))}
             </Grid>
           </Grid>
