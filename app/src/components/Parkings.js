@@ -12,16 +12,10 @@ const getModalStyle = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  // width: 400,
-  // bgcolor: 'background.paper',
-  // border: '2px solid #000',
-  // boxShadow: 24,
-  // p: 4,
 };
 
 const styles = makeStyles((theme) => ({
   root: {
-    // flexGrow: 1,
     margin: theme.spacing(2),
   },
   item: {
@@ -35,11 +29,9 @@ const styles = makeStyles((theme) => ({
     color: 'white',
   },
   paper: {
-    // display: 'flex',
     width: '15%',
     height: '5%',
     margin: theme.spacing(1),
-    // background: theme.palette.text.secondary,
   },
   paper2: {
     position: 'absolute',
@@ -58,7 +50,7 @@ const Parkings = ({ drizzle, drizzleState }) => {
   const classes = styles();
   const [parkingsList, setParkingsList] = useState([]);
   const [modalStyle] = useState(getModalStyle);
-  const [openModal, setOpenModal] = useState(false);
+  const [openModal, setOpenModal] = useState([]);
 
   useEffect(() => {
     (async () => {
@@ -69,6 +61,7 @@ const Parkings = ({ drizzle, drizzleState }) => {
           color: getColor(parking.rentExpiration),
         };
       });
+      setOpenModal(parkings.map(() => false));
       setParkingsList(parkings);
     })();
   }, [drizzle.contracts.Decentrapark.events]);
@@ -77,11 +70,12 @@ const Parkings = ({ drizzle, drizzleState }) => {
     return expiration < Math.floor(new Date().getTime() / 1000) ? 'lightGreen' : 'red';
   };
 
-  const handleOpen = () => {
-    setOpenModal(true);
+  const handleOpen = (index) => {
+    setOpenModal((modal_list) => modal_list.map((modal, i) => index === i)); //list
   };
-  const handleClose = () => {
-    setOpenModal(false);
+
+  const handleClose = (index) => {
+    setOpenModal((modal_list) => modal_list.map(() => false));
   };
 
   const handleRent = async (index, rentPrice) => {
@@ -90,47 +84,18 @@ const Parkings = ({ drizzle, drizzleState }) => {
         .RentParking(index)
         .send({ from: drizzleState.accounts[0], value: rentPrice });
       alert('Transaction success');
+      setParkingsList((parkingsList) =>
+        parkingsList.map((parking, i) => {
+          if (i === index) {
+            parking.color = 'red';
+          }
+
+          return parking;
+        })
+      );
     } catch (err) {
       alert('Error while paying the rent.' + err.message);
     }
-  };
-
-  const openParking = (index, parking) => {
-    return (
-      <div>
-        <Modal
-          aria-labelledby="transition-modal-title"
-          aria-describedby="transition-modal-description"
-          open={openModal}
-          onClose={handleClose}
-        >
-          <div style={modalStyle} className={classes.paper2}>
-            <Grid className={classes.item}>
-              <Typography>Parking #{index}</Typography>
-            </Grid>
-            <Grid className={classes.item}>
-              <Typography>Owner : {parking.owner}</Typography>
-            </Grid>
-            <Grid className={classes.item}>
-              <Typography>Rent price : {parking.rentPrice}</Typography>
-            </Grid>
-
-            <Grid>
-              <Button
-                variant="contained"
-                className={classes.button}
-                size="medium"
-                onClick={() => {
-                  handleRent(index, parking.rentPrice);
-                }}
-              >
-                Rent
-              </Button>
-            </Grid>
-          </div>
-        </Modal>
-      </div>
-    );
   };
 
   return (
@@ -148,7 +113,7 @@ const Parkings = ({ drizzle, drizzleState }) => {
                 <React.Fragment key={index}>
                   <Box
                     onClick={() => {
-                      handleOpen();
+                      handleOpen(index);
                     }}
                     sx={{
                       width: '15%',
@@ -172,8 +137,8 @@ const Parkings = ({ drizzle, drizzleState }) => {
                     <Modal
                       aria-labelledby="transition-modal-title"
                       aria-describedby="transition-modal-description"
-                      open={openModal}
-                      onClose={handleClose}
+                      open={openModal[index]}
+                      onClose={() => handleClose(index)}
                     >
                       <div style={modalStyle} className={classes.paper2}>
                         <Grid className={classes.item}>
