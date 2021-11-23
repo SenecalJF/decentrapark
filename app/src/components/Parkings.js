@@ -2,7 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Modal from '@material-ui/core/Modal';
+import Box from '@material-ui/core/Box';
+import Button from '@material-ui/core/Button';
 import { CssBaseline, Container, Typography } from '@material-ui/core';
+import car from '../img/car.png';
 
 const getModalStyle = {
   position: 'relative',
@@ -26,6 +29,10 @@ const styles = makeStyles((theme) => ({
     marginLeft: theme.spacing(1),
     marginTop: theme.spacing(3),
     marginBottom: theme.spacing(3),
+  },
+  button: {
+    backgroundColor: '#FF4747',
+    color: 'white',
   },
   paper: {
     // display: 'flex',
@@ -64,7 +71,7 @@ const Parkings = ({ drizzle, drizzleState }) => {
       });
       setParkingsList(parkings);
     })();
-  }, []);
+  }, [drizzle.contracts.Decentrapark.events]);
 
   const getColor = (expiration) => {
     return expiration < Math.floor(new Date().getTime() / 1000) ? 'lightGreen' : 'red';
@@ -77,7 +84,18 @@ const Parkings = ({ drizzle, drizzleState }) => {
     setOpenModal(false);
   };
 
-  const openParking = (_index) => {
+  const handleRent = async (index, rentPrice) => {
+    try {
+      await drizzle.contracts.Decentrapark.methods
+        .RentParking(index)
+        .send({ from: drizzleState.accounts[0], value: rentPrice });
+      alert('Transaction success');
+    } catch (err) {
+      alert('Error while paying the rent.' + err.message);
+    }
+  };
+
+  const openParking = (index, parking) => {
     return (
       <div>
         <Modal
@@ -87,7 +105,28 @@ const Parkings = ({ drizzle, drizzleState }) => {
           onClose={handleClose}
         >
           <div style={modalStyle} className={classes.paper2}>
-            <Typography>Hello</Typography>
+            <Grid className={classes.item}>
+              <Typography>Parking #{index}</Typography>
+            </Grid>
+            <Grid className={classes.item}>
+              <Typography>Owner : {parking.owner}</Typography>
+            </Grid>
+            <Grid className={classes.item}>
+              <Typography>Rent price : {parking.rentPrice}</Typography>
+            </Grid>
+
+            <Grid>
+              <Button
+                variant="contained"
+                className={classes.button}
+                size="medium"
+                onClick={() => {
+                  handleRent(index, parking.rentPrice);
+                }}
+              >
+                Rent
+              </Button>
+            </Grid>
           </div>
         </Modal>
       </div>
@@ -106,41 +145,63 @@ const Parkings = ({ drizzle, drizzleState }) => {
             </Typography>
             <Grid container item xs={12}>
               {parkingsList.map((parking, index) => (
-                <div
-                  key={index}
-                  onClick={() => {
-                    handleOpen();
-                  }}
-                  style={{
-                    margin: 10,
-                    width: '15%',
-                    height: 100,
-                    backgroundColor: parking.color,
-                    border: 'solid 1px black',
-                    textAlign: 'center',
-                  }}
-                >
-                  {openParking(index)}
-                  <Typography> {index} </Typography>
-                </div>
-                // <Paper
-                //   // classes={{ background: showColor(index) }}
-                //   variant="outlined"
-                //   className={classes.paper}
-                //   onClick={() => {
-                //     handleOpen();
-                //   }}
-                // >
-                //   {/* {showColor(index)} */}
-                //   <Grid className={classes.item} item xs={12} align="center">
-                //     {/* <Typography> {parkingStruct.owner} </Typography> */}
-                //     {/* <Typography> {parkingStruct.rentPrice} </Typography> */}
-                //     {/* <Typography> {parkingStruct.rentDuration / 86400} </Typography> */}
-                //     {/* <Typography> {parkingStruct.color} </Typography> */}
+                <React.Fragment key={index}>
+                  <Box
+                    onClick={() => {
+                      handleOpen();
+                    }}
+                    sx={{
+                      width: '15%',
+                      height: 100,
+                      margin: 10,
+                      border: 'solid 1px black',
+                      textAlign: 'center',
+                      justifyContent: 'center',
 
-                //     <Typography> {index} </Typography>
-                //   </Grid>
-                // </Paper>
+                      backgroundColor: parking.color,
+
+                      '&:hover': {
+                        backgroundColor: 'parking.color',
+                        opacity: [0.9, 0.8, 0.7],
+                      },
+                    }}
+                  >
+                    <Typography> {index} </Typography>
+                  </Box>
+                  <div>
+                    <Modal
+                      aria-labelledby="transition-modal-title"
+                      aria-describedby="transition-modal-description"
+                      open={openModal}
+                      onClose={handleClose}
+                    >
+                      <div style={modalStyle} className={classes.paper2}>
+                        <Grid className={classes.item}>
+                          <Typography>Parking #{index}</Typography>
+                        </Grid>
+                        <Grid className={classes.item}>
+                          <Typography>Owner : {parking.owner}</Typography>
+                        </Grid>
+                        <Grid className={classes.item}>
+                          <Typography>Rent price : {parking.rentPrice}</Typography>
+                        </Grid>
+
+                        <Grid>
+                          <Button
+                            variant="contained"
+                            className={classes.button}
+                            size="medium"
+                            onClick={() => {
+                              handleRent(index, parking.rentPrice);
+                            }}
+                          >
+                            Rent
+                          </Button>
+                        </Grid>
+                      </div>
+                    </Modal>
+                  </div>
+                </React.Fragment>
               ))}
             </Grid>
           </Grid>
