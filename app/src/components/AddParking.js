@@ -7,6 +7,8 @@ import TextField from '@material-ui/core/TextField';
 
 import { useFormik } from 'formik';
 
+import usdToWei from '../utils/usdToWei';
+
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -41,11 +43,15 @@ const AddParking = ({ drizzle, drizzleState }) => {
     },
     onSubmit: async ({ rentPrice, parkingPrice, rentDuration }) => {
       try {
+        let rentPriceWei = await usdToWei(rentPrice);
+        let parkingPriceWei = await usdToWei(parkingPrice);
+        // console.log(rentPriceEth);
         await drizzle.contracts.Decentrapark.methods
-          .addParkingSpot(drizzleState.accounts[0], rentPrice, parkingPrice, rentDuration)
+          .addParkingSpot(drizzleState.accounts[0], rentPriceWei.toString(), parkingPriceWei.toString(), rentDuration)
           .send({ from: drizzleState.accounts[0] });
         handleButton();
       } catch (error) {
+        console.error(error.message);
         alert('Please enter input correctly - Failed to add parking');
       }
     },
@@ -60,15 +66,15 @@ const AddParking = ({ drizzle, drizzleState }) => {
       <CssBaseline />
       <Container>
         <div className={classes.root}>
-          <Grid container spacing={3} justify="center">
+          <Grid container spacing={3} justifyContent="center">
             <Grid item xs={12}>
               <Paper className={classes.paper}>
                 <Grid className={classes.item} item xs={12}>
-                  <Typography variant="h3" align="center" color="black" fontWeight="bold" color="black">
+                  <Typography variant="h3" align="center" fontWeight="bold">
                     Add your parking spot
                   </Typography>
                 </Grid>
-                <Grid container align="center" justify="center" wrap="nowrap" direction="column">
+                <Grid container align="center" justifyContent="center" wrap="nowrap" direction="column">
                   <form onSubmit={formik.handleSubmit}>
                     <Grid className={classes.item} item xs={6}>
                       <TextField

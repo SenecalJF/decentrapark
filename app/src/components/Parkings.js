@@ -7,6 +7,8 @@ import Button from '@material-ui/core/Button';
 import { CssBaseline, Container, Typography } from '@material-ui/core';
 import car from '../img/car.png';
 
+import weiToUsd from '../utils/weiToUsd';
+
 const getModalStyle = {
   position: 'relative',
   top: '50%',
@@ -51,14 +53,15 @@ const Parkings = ({ drizzle, drizzleState }) => {
   const [parkingsList, setParkingsList] = useState([]);
   const [modalStyle] = useState(getModalStyle);
   const [openModal, setOpenModal] = useState([]);
+  const [priceUSD, setPriceUSD] = useState(0);
 
   useEffect(() => {
     (async () => {
       let parkings = await drizzle.contracts.Decentrapark.methods.getParkings().call();
-      parkings = parkings.map((parking, index) => {
+      parkings = parkings.map((parking) => {
         return {
           ...parking,
-          color: getColor(parking.rentExpiration),
+          available: getAvailability(parking.rentExpiration),
         };
       });
       setOpenModal(parkings.map(() => false));
@@ -66,8 +69,8 @@ const Parkings = ({ drizzle, drizzleState }) => {
     })();
   }, [drizzle.contracts.Decentrapark.events]);
 
-  const getColor = (expiration) => {
-    return expiration < Math.floor(new Date().getTime() / 1000) ? 'lightGreen' : 'red';
+  const getAvailability = (expiration) => {
+    return expiration < Math.floor(new Date().getTime() / 1000);
   };
 
   const handleOpen = (index) => {
@@ -87,7 +90,7 @@ const Parkings = ({ drizzle, drizzleState }) => {
       setParkingsList((parkingsList) =>
         parkingsList.map((parking, i) => {
           if (i === index) {
-            parking.color = 'red';
+            parking.available = false;
           }
 
           return parking;
@@ -96,6 +99,12 @@ const Parkings = ({ drizzle, drizzleState }) => {
     } catch (err) {
       alert('Error while paying the rent.' + err.message);
     }
+  };
+
+  const getPriceInUsd = async (price) => {
+    let usd = await weiToUsd(price);
+    console.log(usd);
+    setPriceUSD(usd);
   };
 
   return (
@@ -114,6 +123,7 @@ const Parkings = ({ drizzle, drizzleState }) => {
                   <Box
                     onClick={() => {
                       handleOpen(index);
+                      getPriceInUsd(parking.rentPrice);
                     }}
                     sx={{
                       width: '15%',
@@ -123,7 +133,7 @@ const Parkings = ({ drizzle, drizzleState }) => {
                       textAlign: 'center',
                       justifyContent: 'center',
 
-                      backgroundColor: parking.color,
+                      backgroundColor: parking.available ? 'lightGreen' : 'red',
 
                       '&:hover': {
                         backgroundColor: 'parking.color',
@@ -148,20 +158,28 @@ const Parkings = ({ drizzle, drizzleState }) => {
                           <Typography>Owner : {parking.owner}</Typography>
                         </Grid>
                         <Grid className={classes.item}>
-                          <Typography>Rent price : {parking.rentPrice}</Typography>
+                          <Typography>
+                            Rent price :{'  '}
+                            {/* {async () => await weiToUsd(parking.rentPrice)} */}
+                            {Math.round(priceUSD)} $
+                          </Typography>
                         </Grid>
 
                         <Grid>
-                          <Button
-                            variant="contained"
-                            className={classes.button}
-                            size="medium"
-                            onClick={() => {
-                              handleRent(index, parking.rentPrice);
-                            }}
-                          >
-                            Rent
-                          </Button>
+                          {parking.available ? (
+                            <Button
+                              variant="contained"
+                              className={classes.button}
+                              size="medium"
+                              onClick={() => {
+                                handleRent(index, parking.rentPrice);
+                              }}
+                            >
+                              Rent
+                            </Button>
+                          ) : (
+                            <Typography fontWeight="bold"> You cant rent the parking at the moment </Typography>
+                          )}
                         </Grid>
                       </div>
                     </Modal>

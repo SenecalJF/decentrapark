@@ -104,7 +104,7 @@ contract Decentrapark {
   function RentParking(uint256 _indexParking) public payable validId(_indexParking) {
     uint256 _rentPrice = getRentPriceByIndex(_indexParking);
     require(getRenterByIndex(_indexParking) != msg.sender, 'You are already renting the parking');
-    require(getRenterByIndex(_indexParking) != getOwnerByIndex(_indexParking), "You can't rent your own parking");
+    require(msg.sender != getOwnerByIndex(_indexParking), "You can't rent your own parking");
     require(getAvailability(_indexParking), 'The parking is already in use');
     require(msg.value == _rentPrice, "The amount sent doesn't correspond to the renting price");
 

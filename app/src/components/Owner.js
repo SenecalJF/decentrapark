@@ -19,7 +19,7 @@ const Owner = ({ drizzle, drizzleState }) => {
       <Container>
         <div className={classes.root}>
           <Grid container spacing={3}>
-            <Typography>Owner component</Typography>
+            <Typography>{drizzleState.accounts[0]}</Typography>
           </Grid>
         </div>
       </Container>
