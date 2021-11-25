@@ -5,7 +5,6 @@ import Modal from '@material-ui/core/Modal';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import { CssBaseline, Container, Typography } from '@material-ui/core';
-import car from '../img/car.png';
 
 import weiToUsd from '../utils/weiToUsd';
 
@@ -121,7 +120,7 @@ const Parkings = ({ drizzle, drizzleState }) => {
         })
       );
     } catch (err) {
-      alert('Error while paying the rent.' + err.message);
+      alert('Error while buying the parking.' + err.message);
     }
   };
 
@@ -141,7 +140,7 @@ const Parkings = ({ drizzle, drizzleState }) => {
                   <Box
                     onClick={async () => {
                       handleOpen(index);
-                      // getPriceInUsd(parking.rentPrice, parking.parkingPrice);
+
                       let renting = await weiToUsd(parking.rentPrice);
                       let buying = await weiToUsd(parking.parkingPrice);
                       setRentPriceUSD(renting);
@@ -184,7 +183,6 @@ const Parkings = ({ drizzle, drizzleState }) => {
                         <Grid className={classes.item}>
                           <Typography>
                             Rent price :{'  '}
-                            {/* {async () => await weiToUsd(parking.rentPrice)} */}
                             {Math.round(rentPriceUSD)} $
                           </Typography>
                         </Grid>
