@@ -80,7 +80,7 @@ const Parkings = ({ drizzle, drizzleState }) => {
     setOpenModal((modal_list) => modal_list.map((modal, i) => index === i)); //list
   };
 
-  const handleClose = (index) => {
+  const handleClose = () => {
     setOpenModal((modal_list) => modal_list.map(() => false));
   };
 
@@ -169,7 +169,7 @@ const Parkings = ({ drizzle, drizzleState }) => {
                       aria-labelledby="transition-modal-title"
                       aria-describedby="transition-modal-description"
                       open={openModal[index]}
-                      onClose={() => handleClose(index)}
+                      onClose={() => handleClose()}
                     >
                       <div style={modalStyle} className={classes.paper2}>
                         <Grid className={classes.item}>
