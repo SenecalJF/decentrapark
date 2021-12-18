@@ -28,6 +28,7 @@
     "@material-ui/icons": "^4.11.2",
     "axios": "^0.24.0",
     "formik": "^2.2.9",
+    "react-slick": "^0.28.1",
     "truffle-assertions": "^0.9.2"
   }
 }

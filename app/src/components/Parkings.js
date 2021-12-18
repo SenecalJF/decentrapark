@@ -154,7 +154,7 @@ const Parkings = ({ drizzle, drizzleState }) => {
                       textAlign: 'center',
                       justifyContent: 'center',
 
-                      backgroundColor: parking.available ? 'lightGreen' : 'red',
+                      backgroundColor: parking.available ? '#00FF00' : '#FF3F3F',
 
                       '&:hover': {
                         backgroundColor: 'parking.color',

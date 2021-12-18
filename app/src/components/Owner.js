@@ -3,10 +3,17 @@ import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import Modal from '@material-ui/core/Modal';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
 
 import { CssBaseline, Container, Typography, Paper } from '@material-ui/core';
 
+import TimePicker from './TimePicker';
+
 import weiToUsd from '../utils/weiToUsd';
+import usdToWei from '../utils/usdToWei';
+
+import { useFormik } from 'formik';
 
 const getModalStyle = {
   position: 'relative',
@@ -23,16 +30,26 @@ const styles = makeStyles((theme) => ({
   item: {
     margin: theme.spacing(3, 3, 1, 1),
   },
+
   paper: {
     padding: theme.spacing(2),
     color: theme.palette.text.secondary,
     overflow: 'auto',
     overflowWrap: 'break-word',
   },
+  setting: {
+    margin: theme.spacing(2),
+
+    alignContent: 'center',
+  },
+  box: {
+    border: 4,
+    borderColor: '#FF4747',
+  },
   modal: {
     position: 'absolute',
     height: '50%',
-    width: '50%',
+    width: '40%',
     overflow: 'auto',
     overflowWrap: 'break-word',
     backgroundColor: theme.palette.background.paper,
@@ -49,6 +66,10 @@ const Owner = ({ drizzle, drizzleState }) => {
   const [parkingsList, setParkingsList] = useState([]);
   const [openModal, setOpenModal] = useState([]);
   const [modalStyle] = useState(getModalStyle);
+  const [rentCost, setRentCost] = useState(false);
+  const [parkingCost, setParkingCost] = useState(false);
+  const [rentTime, setRentTime] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -77,10 +98,153 @@ const Owner = ({ drizzle, drizzleState }) => {
   const handleOpen = (index) => {
     setOpenModal((modal_list) => modal_list.map((modal, i) => index === i)); //list
   };
-  console.log(parkingsList);
 
   const handleClose = () => {
     setOpenModal((modal_list) => modal_list.map(() => false));
+  };
+
+  const formikRentCost = useFormik({
+    initialValues: {
+      rentPrice: 0,
+    },
+    onSubmit: async ({ rentPrice }) => {
+      try {
+        let rentPriceWei = await usdToWei(rentPrice);
+
+        await drizzle.contracts.Decentrapark.methods
+          .setRentPrice(rentPriceWei.toString(), currentIndex)
+          .send({ from: drizzleState.accounts[0] });
+        handleButton();
+      } catch (error) {
+        console.error(error.message);
+        alert('Please enter input correctly - Failed to change parking rent price');
+      }
+    },
+  });
+
+  const formikParkingPrice = useFormik({
+    initialValues: {
+      parkingPrice: 0,
+    },
+    onSubmit: async ({ parkingPrice }) => {
+      try {
+        let parkingPriceWei = await usdToWei(parkingPrice);
+
+        await drizzle.contracts.Decentrapark.methods
+          .setParkingPrice(parkingPriceWei.toString(), currentIndex)
+          .send({ from: drizzleState.accounts[0] });
+        handleButton();
+      } catch (error) {
+        console.error(error.message);
+        alert('Please enter input correctly - Failed to change the parking price');
+      }
+    },
+  });
+
+  const formikRentTime = useFormik({
+    initialValues: {
+      rentDuration: 0,
+    },
+    onSubmit: async ({ rentDuration }) => {
+      try {
+        await drizzle.contracts.Decentrapark.methods
+          .setRentDuration(rentDuration, currentIndex)
+          .send({ from: drizzleState.accounts[0] });
+        handleButton();
+      } catch (error) {
+        console.error(error.message);
+        alert('Please enter input correctly - Failed to change the parking rent time');
+      }
+    },
+  });
+
+  const changeRentCost = () => {
+    return (
+      <div className={classes.item}>
+        <Box sx={{ marginTop: 3, height: '100%', border: '4px ridge' }}>
+          <Grid className={classes.setting}>
+            <Grid className={classes.item}>
+              <Typography>Change the rent cost</Typography>
+            </Grid>
+            <form onSubmit={formikRentCost.handleSubmit}>
+              <Grid align="right">
+                <TextField
+                  fullWidth
+                  name="rentPrice"
+                  id="rentPrice"
+                  label="Enter renting price"
+                  type="number"
+                  min="0.01"
+                  value={formikRentCost.values.rentPrice}
+                  onChange={formikRentCost.handleChange}
+                  error={formikRentCost.touched.rentPrice && Boolean(formikRentCost.errors.rentPrice)}
+                  helperText={formikRentCost.touched.rentPrice && formikRentCost.errors.rentPrice}
+                />
+                <Grid className={classes.item}>
+                  <Button color="secondary" variant="contained" type="submit">
+                    {' '}
+                    DONE{' '}
+                  </Button>
+                </Grid>
+              </Grid>
+            </form>
+          </Grid>
+        </Box>
+      </div>
+    );
+  };
+
+  const changeResellValue = () => {
+    return (
+      <div className={classes.item}>
+        <Box sx={{ marginTop: 3, height: '100%', border: '4px ridge' }}>
+          <Grid className={classes.setting}>
+            <Grid className={classes.item}>
+              <Typography>Change the resell value</Typography>
+            </Grid>
+            <form onSubmit={formikParkingPrice.handleSubmit}>
+              <Grid align="right">
+                <TextField
+                  fullWidth
+                  name="parkingPrice"
+                  id="parkingPrice"
+                  label="Enter parking price"
+                  type="number"
+                  min="0.01"
+                  value={formikParkingPrice.values.parkingPrice}
+                  onChange={formikParkingPrice.handleChange}
+                  error={formikParkingPrice.touched.parkingPrice && Boolean(formikParkingPrice.errors.parkingPrice)}
+                  helperText={formikParkingPrice.touched.parkingPrice && formikParkingPrice.errors.parkingPrice}
+                />
+                <Grid className={classes.item}>
+                  <Button color="secondary" variant="contained" type="submit">
+                    {' '}
+                    DONE{' '}
+                  </Button>
+                </Grid>
+              </Grid>
+            </form>
+          </Grid>
+        </Box>
+      </div>
+    );
+  };
+
+  const changeRentTime = () => {
+    return (
+      <div className={classes.item}>
+        <Box sx={{ marginTop: 2, width: '100%', height: '100%', border: '4px ridge' }}>
+          <Grid className={classes.setting}>
+            <Typography>Change the rent time</Typography>
+            <form onSubmit={formikRentTime.handleSubmit}></form>
+          </Grid>
+        </Box>
+      </div>
+    );
+  };
+
+  const handleButton = async () => {
+    window.alert('Successfully change the settings');
   };
 
   return (
@@ -101,6 +265,7 @@ const Owner = ({ drizzle, drizzleState }) => {
                     <Box
                       onClick={async () => {
                         handleOpen(index); //open modal when clicked
+                        setCurrentIndex(index);
                       }}
                       sx={{
                         width: '35%',
@@ -110,7 +275,7 @@ const Owner = ({ drizzle, drizzleState }) => {
                         textAlign: 'center',
                         justifyContent: 'center',
 
-                        backgroundColor: available ? 'lightGreen' : 'red',
+                        backgroundColor: available ? '#00FF00' : '#FF3F3F',
 
                         '&:hover': {
                           backgroundColor: 'parking.color',
@@ -125,14 +290,68 @@ const Owner = ({ drizzle, drizzleState }) => {
                         aria-labelledby="transition-modal-title"
                         aria-describedby="transition-modal-description"
                         open={openModal[index]}
-                        onClose={() => handleClose()}
+                        onClose={() => {
+                          handleClose();
+                          setCurrentIndex(-1);
+                        }}
                       >
                         <div style={modalStyle} className={classes.modal}>
-                          <Grid>
-                            <Typography> {index} </Typography>
-                            <Typography> {usdRent} </Typography>
-                            <Typography> {usdPriceParking} </Typography>
-                            <Typography> {rentDuration / 86400} days </Typography>
+                          <Grid className={classes.item}>
+                            <Grid align="center" className={classes.item}>
+                              <Typography> Parking index : {index} </Typography>
+                            </Grid>
+                            <Grid container spacing={1}>
+                              <Grid item xs={5}>
+                                <Grid className={classes.item}>
+                                  <Typography> Rent cost : {Math.round(usdRent)} $ </Typography>
+                                  <Button
+                                    color="secondary"
+                                    variant="contained"
+                                    onClick={() => {
+                                      setRentCost(!rentCost);
+                                      setParkingCost(false);
+                                      setRentTime(false);
+                                    }}
+                                  >
+                                    Change
+                                  </Button>
+                                </Grid>
+                                <Grid className={classes.item}>
+                                  <Typography> Resell value : {Math.round(usdPriceParking)} $</Typography>
+                                  <Button
+                                    color="secondary"
+                                    variant="contained"
+                                    onClick={() => {
+                                      setParkingCost(!parkingCost);
+                                      setRentCost(false);
+                                      setRentTime(false);
+                                    }}
+                                  >
+                                    Change
+                                  </Button>
+                                </Grid>
+                                <Grid className={classes.item}>
+                                  <Typography> Rent duration {Math.round(rentDuration / 86400)} days </Typography>
+                                  <Button
+                                    color="secondary"
+                                    variant="contained"
+                                    onClick={() => {
+                                      setRentTime(!rentTime);
+                                      setParkingCost(false);
+                                      setRentCost(false);
+                                    }}
+                                  >
+                                    Change
+                                  </Button>
+                                </Grid>
+                              </Grid>
+
+                              <Grid item xs={7} align="center" marginLeft="1">
+                                {rentCost ? changeRentCost() : <></>}
+                                {parkingCost ? changeResellValue() : <></>}
+                                {rentTime ? changeRentTime() : <></>}
+                              </Grid>
+                            </Grid>
                           </Grid>
                         </div>
                       </Modal>
