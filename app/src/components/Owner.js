@@ -235,8 +235,31 @@ const Owner = ({ drizzle, drizzleState }) => {
       <div className={classes.item}>
         <Box sx={{ marginTop: 2, width: '100%', height: '100%', border: '4px ridge' }}>
           <Grid className={classes.setting}>
-            <Typography>Change the rent time</Typography>
-            <form onSubmit={formikRentTime.handleSubmit}></form>
+            <Grid className={classes.item}>
+              <Typography>Change the rent time</Typography>
+            </Grid>
+            <form onSubmit={formikRentTime.handleSubmit}>
+              <Grid align="right">
+                <TextField
+                  fullWidth
+                  name="rentDuration"
+                  id="rentDuration"
+                  label="Enter the rent duration"
+                  type="number"
+                  min="0.01"
+                  value={formikRentTime.values.rentDuration}
+                  onChange={formikRentTime.handleChange}
+                  error={formikRentTime.touched.rentDuration && Boolean(formikRentTime.errors.rentDuration)}
+                  helperText={formikRentTime.touched.rentDuration && formikRentTime.errors.rentDuration}
+                />
+                <Grid className={classes.item}>
+                  <Button color="secondary" variant="contained" type="submit">
+                    {' '}
+                    DONE{' '}
+                  </Button>
+                </Grid>
+              </Grid>
+            </form>
           </Grid>
         </Box>
       </div>
