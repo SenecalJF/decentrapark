@@ -70,7 +70,7 @@ const Parkings = ({ drizzle, drizzleState }) => {
       setOpenModal(parkings.map(() => false));
       setParkingsList(parkings);
     })();
-  }, [drizzle.contracts.Decentrapark.events]);
+  }, [drizzle.contracts.Decentrapark.methods]);
 
   const getAvailability = (expiration) => {
     return expiration < Math.floor(new Date().getTime() / 1000);

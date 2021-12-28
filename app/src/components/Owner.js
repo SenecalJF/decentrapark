@@ -8,8 +8,6 @@ import TextField from '@material-ui/core/TextField';
 
 import { CssBaseline, Container, Typography, Paper } from '@material-ui/core';
 
-import TimePicker from './TimePicker';
-
 import weiToUsd from '../utils/weiToUsd';
 import usdToWei from '../utils/usdToWei';
 
@@ -89,7 +87,7 @@ const Owner = ({ drizzle, drizzleState }) => {
       setParkingsList(parkings);
       setOpenModal(parkings.map(() => false));
     })();
-  }, [drizzle.contracts.Decentrapark.events]);
+  }, [drizzle.contracts.Decentrapark.methods]);
 
   const getAvailability = (expiration) => {
     return expiration < Math.floor(new Date().getTime() / 1000);
@@ -268,7 +266,7 @@ const Owner = ({ drizzle, drizzleState }) => {
 
   const handleButton = async () => {
     window.alert('Successfully change the settings');
-    window.location.reload();
+    // window.location.reload();
     setRentCost(false);
     setParkingCost(false);
     setRentTime(false);
@@ -376,7 +374,7 @@ const Owner = ({ drizzle, drizzleState }) => {
                                 </Grid>
                               </Grid>
 
-                              <Grid item xs={7} align="center" marginLeft="1">
+                              <Grid item xs={7} align="center">
                                 {rentCost ? changeRentCost() : <></>}
                                 {parkingCost ? changeResellValue() : <></>}
                                 {rentTime ? changeRentTime() : <></>}
