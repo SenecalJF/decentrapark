@@ -268,6 +268,10 @@ const Owner = ({ drizzle, drizzleState }) => {
 
   const handleButton = async () => {
     window.alert('Successfully change the settings');
+    window.location.reload();
+    setRentCost(false);
+    setParkingCost(false);
+    setRentTime(false);
   };
 
   return (
@@ -282,7 +286,7 @@ const Owner = ({ drizzle, drizzleState }) => {
             </Paper>
 
             <Grid container item xs={12}>
-              {parkingsList.map(({ available, owner, usdRent, usdPriceParking, rentDuration }, index) =>
+              {parkingsList.map(({ available, owner, usdRent, usdPriceParking, rentDuration, renter }, index) =>
                 owner === drizzleState.accounts[0] ? (
                   <React.Fragment key={index}>
                     <Box
@@ -316,6 +320,9 @@ const Owner = ({ drizzle, drizzleState }) => {
                         onClose={() => {
                           handleClose();
                           setCurrentIndex(-1);
+                          setRentCost(false);
+                          setParkingCost(false);
+                          setRentTime(false);
                         }}
                       >
                         <div style={modalStyle} className={classes.modal}>
@@ -375,6 +382,14 @@ const Owner = ({ drizzle, drizzleState }) => {
                                 {rentTime ? changeRentTime() : <></>}
                               </Grid>
                             </Grid>
+                            {!available ? (
+                              <Grid className={classes.item}>
+                                <Typography>Current renter : </Typography>
+                                <Typography variant="body6">{renter}</Typography>
+                              </Grid>
+                            ) : (
+                              <></>
+                            )}
                           </Grid>
                         </div>
                       </Modal>
