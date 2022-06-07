@@ -87,7 +87,7 @@ const Owner = ({ drizzle, drizzleState }) => {
       setParkingsList(parkings);
       setOpenModal(parkings.map(() => false));
     })();
-  }, [drizzle.contracts.Decentrapark.methods]);
+  }, [drizzle.contracts.Decentrapark.methods, rentCost, rentPrice, rentTime, parkingCost]);
 
   const getAvailability = (expiration) => {
     return expiration < Math.floor(new Date().getTime() / 1000);
